@@ -1,15 +1,28 @@
 import {NextRequest} from "next/server";
 import Stripe from "stripe";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "");
-
 const GIFT_CARD_PAYMENT_LINK_ID = process.env.GIFT_CARD_PAYMENT_LINK_ID || "";
 
 export const POST = async (request: NextRequest) => {
-	const body = await request.text();
-	const signature = request.headers.get("stripe-signature") || "";
-	const secret = process.env.STRIPE_WEBHOOK_SECRET || "";
+	if (!process.env.STRIPE_SECRET_KEY)
+		return new Response(JSON.stringify({message: "Missing stripe secret key"}), {
+			status: 500,
+		});
+	const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
+	const signature = request.headers.get("stripe-signature");
+	if (!signature)
+		return new Response(JSON.stringify({message: "Missing webhook signature"}), {
+			status: 400,
+		});
+
+	const secret = process.env.STRIPE_WEBHOOK_SECRET;
+	if (!secret)
+		return new Response(JSON.stringify({message: "Missing webhook secret"}), {
+			status: 500,
+		});
+
+	const body = await request.text();
 	const event = Stripe.webhooks.constructEvent(body, signature, secret);
 
 	if (event.type === "checkout.session.completed") {
