@@ -2,6 +2,7 @@ import {NextRequest} from "next/server";
 import Stripe from "stripe";
 
 const GIFT_CARD_PAYMENT_LINK_ID = process.env.GIFT_CARD_PAYMENT_LINK_ID || "";
+const WEBHOOK_TOLERANCE = 1000;
 
 export const POST = async (request: NextRequest) => {
 	if (!process.env.STRIPE_SECRET_KEY)
@@ -23,7 +24,12 @@ export const POST = async (request: NextRequest) => {
 		});
 
 	const body = await request.text();
-	const event = Stripe.webhooks.constructEvent(body, signature, secret);
+	const event = Stripe.webhooks.constructEvent(
+		body,
+		signature,
+		secret,
+		WEBHOOK_TOLERANCE,
+	);
 
 	if (event.type === "checkout.session.completed") {
 		const session = event.data.object;
