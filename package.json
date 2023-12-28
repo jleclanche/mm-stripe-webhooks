@@ -1,0 +1,46 @@
+{
+	"name": "mm-stripe-webhooks",
+	"version": "0.1.0",
+	"private": true,
+	"scripts": {
+		"dev": "next dev",
+		"build": "next build",
+		"start": "next start",
+		"lint": "next lint",
+		"format": "prettier --write \"./**/*.{js,jsx,ts,tsx,css,scss}\" \"{.,./public}/*.json\""
+	},
+	"dependencies": {
+		"next": "14.0.4",
+		"react": "^18",
+		"react-dom": "^18"
+	},
+	"devDependencies": {
+		"@types/node": "^20",
+		"@types/react": "^18",
+		"@types/react-dom": "^18",
+		"eslint": "^8",
+		"eslint-config-next": "14.0.4",
+		"eslint-config-prettier": "^9.1.0",
+		"postcss": "^8",
+		"prettier": "^3.1.1",
+		"typescript": "^5"
+	},
+	"prettier": {
+		"arrowParens": "always",
+		"bracketSpacing": false,
+		"printWidth": 88,
+		"tabWidth": 4,
+		"trailingComma": "all",
+		"useTabs": true
+	},
+	"eslintConfig": {
+		"extends": [
+			"next/core-web-vitals",
+			"prettier"
+		],
+		"rules": {
+			"@next/next/no-img-element": "off",
+			"react/no-unknown-property": "error"
+		}
+	}
+}
