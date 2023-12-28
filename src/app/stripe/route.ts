@@ -39,11 +39,11 @@ export const POST = async (request: NextRequest) => {
 		if (paymentIntentId && session.payment_link === GIFT_CARD_PAYMENT_LINK_ID) {
 			const email = session.customer_details?.email;
 			const name = session.customer_details?.name;
-			const pi = await stripe.paymentIntents.retrieve(paymentIntentId);
-
-			const charges = (pi as any).charges as Stripe.ApiList<Stripe.Charge>;
-			if (!charges?.data[0]) throw new Error("No charge found");
-			const receiptNumber = charges.data[0].receipt_number;
+			const pi = await stripe.paymentIntents.retrieve(paymentIntentId, {
+				expand: ["latest_charge"],
+			});
+			const charge = pi.latest_charge as Stripe.Charge;
+			const receiptNumber = charge.receipt_number;
 
 			console.log(email, name, pi, receiptNumber);
 		}
